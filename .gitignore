@@ -1,4 +1,7 @@
-# assignment files
+# HW assignment files
+README
+sample-res.dat
+train-qrels.txt
 documents/
 eval/
 topics/
