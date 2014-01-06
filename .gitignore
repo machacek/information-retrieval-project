@@ -1,3 +1,9 @@
+# assignment files
+documents/
+eval/
+topics/
+*.list
+
 *.py[cod]
 
 # C extensions
