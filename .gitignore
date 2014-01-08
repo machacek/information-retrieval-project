@@ -1,11 +1,5 @@
 # HW assignment files
-README
-sample-res.dat
-train-qrels.txt
-documents/
-eval/
-topics/
-*.list
+assignment-1/
 
 *.py[cod]
 
