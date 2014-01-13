@@ -1,15 +1,15 @@
 from utils import Factory
 
 class Caser(object):
-    def case_iterable(iterable):
-        return map(self.case_str, iterable)
+    def case_iterable(self, iterable):
+        return [self.case_str(token) for token in iterable]
 
 class LowerCaser(Caser):
-    def case_str(str):
+    def case_str(self, str):
         return str.lower()
 
 class OriginalCaser(Caser):
-    def case_str(str):
+    def case_str(self, str):
         return str
 
 lowercaser_factory = Factory({

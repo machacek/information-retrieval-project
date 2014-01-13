@@ -11,7 +11,7 @@ import sys
 #
 from preprocessing.casing import lowercaser_factory 
 from preprocessing.termclassing import termclassifier_factory
-
+from preprocessing.stopwords import stopper_factory
 
 config = None
 
@@ -65,7 +65,12 @@ def main():
             dest="termclassifier",
             choices=termclassifier_factory.choices())
 
-    
+    parser.add_argument("-s","--stopwords",
+            help="removing stopwords",
+            default="none",
+            type=stopper_factory,
+            dest="stopper",
+            choices=stopper_factory.choices())
 
     config = parser.parse_args()
 
