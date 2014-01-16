@@ -37,6 +37,10 @@ def main():
             type=argparse.FileType('r'),
             dest="documents_list")
 
+    parser.add_argument("-p", "--pathprefix",
+            help="path to which filenames are relative to",
+            default="")
+
     parser.add_argument("-r",
             help="a label identifying particular experiment run",
             default="no_id",
@@ -71,6 +75,7 @@ def main():
             type=stopper_factory,
             dest="stopper",
             choices=stopper_factory.choices())
+
 
     config = parser.parse_args()
 
