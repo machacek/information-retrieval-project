@@ -2,7 +2,7 @@ import os
 
 from bs4 import BeautifulSoup
 
-from .token import Token
+from token import Token
 
 class Document(object):
     """
@@ -14,7 +14,7 @@ class Document(object):
         document_path = os.path.join(*path_parts)
         self.parse_vertical_format(document_path)
     
-    def parse_vertical_format(self, document_path)
+    def parse_vertical_format(self, document_path):
         with open(document_path, 'r') as file:
             soup = BeautifulSoup(file, "xml") 
 
