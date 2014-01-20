@@ -2,7 +2,7 @@ import os
 
 from bs4 import BeautifulSoup
 
-from token import Token
+from verttoken import Token
 
 class Document(object):
     """
