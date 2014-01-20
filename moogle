@@ -13,11 +13,17 @@ from preprocessing.casing import lowercaser_factory
 from preprocessing.termclassing import termclassifier_factory
 from preprocessing.stopwords import stopper_factory
 
-config = None
+from document.documentcollection import DocumentCollection
+
 
 def main():
-    global config
+    args = parse_args()
+    
+    documents = DocumentCollection(args.pathprefix, args.documents_list)
 
+
+def parse_args():
+    
     parser = argparse.ArgumentParser(
             description="Creates index from given list of documents and performs documents retrieval for given list of topics",
             epilog="Author: Matous Machacek <machacekmatous@gmail.com>")
@@ -76,10 +82,7 @@ def main():
             dest="stopper",
             choices=stopper_factory.choices())
 
-
-    config = parser.parse_args()
-
-    print(config)
+    return parser.parse_args()
 
 if __name__ == '__main__':
     main()
