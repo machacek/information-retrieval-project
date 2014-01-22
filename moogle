@@ -13,13 +13,18 @@ from preprocessing.casing import lowercaser_factory
 from preprocessing.termclassing import termclassifier_factory
 from preprocessing.stopwords import stopper_factory
 
-from document.documentcollection import DocumentCollection
+from document import DocumentCollection
+from topic import TopicCollection
 
 
 def main():
     args = parse_args()
     
     documents = DocumentCollection(args.pathprefix, args.documents_list)
+
+
+
+
 
 
 def parse_args():
