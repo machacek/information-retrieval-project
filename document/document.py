@@ -25,3 +25,6 @@ class Document(VerticalFormat):
         self.title = self.parse_section(soup.DOC.TITLE)
         self.heading = self.parse_section(soup.DOC.HEADING)
         self.text = self.parse_section(soup.DOC.TEXT)
+
+    def __repr__(self):
+        return "<Document: %s>" % self.docid

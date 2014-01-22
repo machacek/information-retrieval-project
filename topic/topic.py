@@ -17,3 +17,6 @@ class Topic(VerticalFormat):
         self.title = self.parse_section(soup.top.title)
         self.desc = self.parse_section(soup.top.desc)
         self.narr = self.parse_section(soup.top.narr)
+
+    def __repr__(self):
+        return "<Topic: %s>" % self.num

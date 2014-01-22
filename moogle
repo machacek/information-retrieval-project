@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 #
-# std imports
+# Std library imports
 #
 import argparse
 import sys
 
 #
-# custom imports
+# Custom imports
 #
 from preprocessing.casing import lowercaser_factory 
 from preprocessing.termclassing import termclassifier_factory
@@ -21,9 +21,12 @@ def main():
     args = parse_args()
     
     documents = DocumentCollection(args.pathprefix, args.documents_list)
+    topics = TopicCollection(args.pathprefix, args.topics_list)
 
 
 
+    print(list(documents))
+    print(list(topics))
 
 
 
