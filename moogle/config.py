@@ -1,14 +1,8 @@
-#!/usr/bin/env python3
-
-#
 # Std library imports
-#
 import argparse
 import sys
 
-#
 # Custom imports
-#
 from preprocessing.casing import caser_factory 
 from preprocessing.termclassing import termclassifier_factory
 from preprocessing.stopwords import stopwords_factory
