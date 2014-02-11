@@ -1,104 +1,12 @@
 #!/usr/bin/env python3
 
-#
-# Std library imports
-#
-import argparse
-import sys
-
-#
-# Custom imports
-#
-from preprocessing.casing import lowercaser_factory 
-from preprocessing.termclassing import termclassifier_factory
-from preprocessing.stopwords import stopper_factory
-
+from config import config
 from document import DocumentCollection
 from topic import TopicCollection
 
 
 def main():
-    config = parse_args()
-    
-    documents_vert = DocumentCollection(config.pathprefix, config.documents_list)
-    topics_vert = TopicCollection(config.pathprefix, config.topics_list)
-
-    documents_classes = config.termclassifier.convert_document_collection(documents_vert)
-    topics_classes = config.termclassifier.convert_topic_collection(topics_vert)
-
-
-    
-
-   
-
-
-
-    print(list(documents))
-    print(list(topics))
-
-
-
-def parse_args():
-    
-    parser = argparse.ArgumentParser(
-            description="Creates index from given list of documents and performs documents retrieval for given list of topics",
-            epilog="Author: Matous Machacek <machacekmatous@gmail.com>")
-
-    #
-    # Obligatory options
-    #
-    parser.add_argument("-q",
-            help="a file with a list of topic filenames",
-            required=True,
-            type=argparse.FileType('r'),
-            dest="topics_list") 
-    
-    parser.add_argument("-d",
-            help="a file with a list of document filenames",
-            required=True,
-            type=argparse.FileType('r'),
-            dest="documents_list")
-
-    parser.add_argument("-p", "--pathprefix",
-            help="path to which filenames are relative to",
-            default="")
-
-    parser.add_argument("-r",
-            help="a label identifying particular experiment run",
-            default="no_id",
-            dest="run_id")
-
-    parser.add_argument("-o",
-            help="an output file",
-            default=sys.stdout,
-            type=argparse.FileType('r'),
-            dest="documents_list")
-
-    #
-    # Custom options
-    #
-    parser.add_argument("-c", "--lowercase",
-            help="lowercasing",
-            default="no",
-            type=lowercaser_factory,
-            dest="lowercaser",
-            choices=lowercaser_factory.choices())
-
-    parser.add_argument("-t", "--termclasses",
-            help="turning text into bag of words/terms (forms, stems, lemmas, classes)",
-            default="wordforms",
-            type=termclassifier_factory,
-            dest="termclassifier",
-            choices=termclassifier_factory.choices())
-
-    parser.add_argument("-s","--stopwords",
-            help="removing stopwords",
-            default="none",
-            type=stopper_factory,
-            dest="stopper",
-            choices=stopper_factory.choices())
-
-    return parser.parse_args()
+    pass
 
 if __name__ == '__main__':
     main()
