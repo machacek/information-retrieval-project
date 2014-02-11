@@ -1,3 +1,5 @@
+from utils import Factory
+
 from document import DocumentTokens
 from topic import TopicTokens
 
@@ -19,3 +21,8 @@ class WordFormClassifier(TermClassifier):
 class LemmaClassifier(TermClassifier):
     def convert_vert_item(self, vert_item):
         return vert_item.lemma
+
+termclassifier_factory = Factory({
+    'wordforms' : WordFormClassifier,
+    'lemmas'    : LemmasClassifier,
+    })
