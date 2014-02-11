@@ -1,12 +1,8 @@
 import os
-
-from bs4 import BeautifulSoup
-
 from vert import VertFormat
 
-class DocumentVert(VertFormat):
+class Document(VertFormat):
     """
-    This class represents raw documents in vertical format.
     """
 
     def process_soup(self, soup):
@@ -22,32 +18,9 @@ class DocumentVert(VertFormat):
             self.geography = None
 
         # Parse the sections
-        self.title = self.parse_section(soup.DOC.TITLE)
-        self.heading = self.parse_section(soup.DOC.HEADING)
-        self.text = self.parse_section(soup.DOC.TEXT)
+        self.title = self.bag_of_words(soup.DOC.TITLE)
+        self.heading = self.bag_of_words(soup.DOC.HEADING)
+        self.text = self.bag_of_words(soup.DOC.TEXT)
 
     def __repr__(self):
         return "<Document: %s>" % self.docid
-
-class DocumentTokens(object):
-    """ 
-    This class represents documents converted from vertical format to list of tokens representation
-    """
-
-    def __init__(self, document_vert, config):
-        self.docid, self.docno, self.date = document_vert.docid, document_vert.docno, document_vert.date
-        self.title = classifier.convert_vert_list(document_vert.title)
-        self.heading = classifier.convert_vert_list(document_vert.heading)
-        self.text = classifier.convert_vert_list(document_vert.text)
-
-class DocumentBag(object):
-    """
-    This class representes documents as a bag of terms
-    """
-
-    def __init__(self, document_tokens):
-        self.docid, self.docno, self.date = document_tokens.docid, document_tokens.docno, document_tokens.date
-        self.title = Counter(document_tokens.title)
-        self.heading = Counter(document_tokens.heading)
-        self.text = Counter(document_tokens.text)
-

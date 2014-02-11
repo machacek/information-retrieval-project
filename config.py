@@ -6,6 +6,13 @@
 import argparse
 import sys
 
+#
+# Custom imports
+#
+from preprocessing.casing import caser_factory 
+from preprocessing.termclassing import termclassifier_factory
+from preprocessing.stopwords import stopwords_factory
+
 def parse_args():
     
     parser = argparse.ArgumentParser(
@@ -49,14 +56,14 @@ def parse_args():
             help="lowercasing",
             default="no",
             type=caser_factory,
-            dest="caser",
+            dest="case",
             choices=caser_factory.choices())
 
     parser.add_argument("-t", "--termclasses",
             help="turning text into bag of words/terms (forms, stems, lemmas, classes)",
             default="wordforms",
             type=termclassifier_factory,
-            dest="termclassifier",
+            dest="classifier",
             choices=termclassifier_factory.choices())
 
     parser.add_argument("-s","--stopwords",
