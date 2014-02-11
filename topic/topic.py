@@ -1,10 +1,11 @@
 import os
+from collections import Counter
 
 from bs4 import BeautifulSoup
 
-from verttoken import VerticalFormat
+from vert import VertFormat
 
-class Topic(VerticalFormat):
+class TopicVert(VertFormat):
     """
     This class represents raw topics in vertical format.
     """
@@ -20,3 +21,27 @@ class Topic(VerticalFormat):
 
     def __repr__(self):
         return "<Topic: %s>" % self.num
+
+class TopicTokens(object):
+    """
+    This class represents topics converted from vertical format to list of tokens representation
+    """
+
+    def __init__(self, topic_vert, classifier):
+        self.num = topic_vert.num
+        self.title = classifier.convert_vert_list(topic_vert.title)
+        self.desc = classifier.convert_vert_list(topic_vert.desc)
+        self.narr = classifier.convert_vert_list(topic_vert.narr)
+
+class TopicBag(object):
+    """
+    This class representes topics as a bag of terms
+    """
+
+    def __init__(self, topic_tokens):
+        self.num = topic_tokens.num
+        self.title = Counter(topic_tokens.title)
+        self.desc = Counter(topic_tokens.desc)
+        self.narr = Counter(topic_tokens.narr)
+
+

@@ -2,7 +2,7 @@ import os
 
 from bs4 import BeautifulSoup
 
-from .verttoken import Token
+from .vertitem import VertItem
 
 class VerticalFormat(object):
     """
@@ -26,5 +26,5 @@ class VerticalFormat(object):
         lines = soup_object.text.splitlines()
         lines = (line.strip() for line in lines)
         lines = filter(None, lines)
-        tokens = map(Token, lines)
+        tokens = map(VertItem, lines)
         return list(tokens)

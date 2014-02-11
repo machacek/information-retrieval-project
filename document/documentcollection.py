@@ -1,4 +1,4 @@
-from .document import Document
+from .document import DocumentVert
 
 class DocumentCollection(object):
     def __init__(self, prefix, document_list_file):
@@ -7,5 +7,5 @@ class DocumentCollection(object):
 
     def __iter__(self):
         for file_name in self.document_names_list:
-            yield Document(self.prefix, file_name)
+            yield DocumentVert(self.prefix, file_name)
 

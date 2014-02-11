@@ -18,10 +18,18 @@ from topic import TopicCollection
 
 
 def main():
-    args = parse_args()
+    config = parse_args()
     
-    documents = DocumentCollection(args.pathprefix, args.documents_list)
-    topics = TopicCollection(args.pathprefix, args.topics_list)
+    documents_vert = DocumentCollection(config.pathprefix, config.documents_list)
+    topics_vert = TopicCollection(config.pathprefix, config.topics_list)
+
+    documents_classes = config.termclassifier.convert_document_collection(documents_vert)
+    topics_classes = config.termclassifier.convert_topic_collection(topics_vert)
+
+
+    
+
+   
 
 
 

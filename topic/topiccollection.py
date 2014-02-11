@@ -1,4 +1,4 @@
-from .topic import Topic
+from .topic import TopicVert
 
 class TopicCollection(object):
     def __init__(self, prefix, topic_list_file):
@@ -7,5 +7,5 @@ class TopicCollection(object):
 
     def __iter__(self):
         for file_name in self.topic_names_list:
-            yield Topic(self.prefix, file_name)
+            yield TopicVert(self.prefix, file_name)
 

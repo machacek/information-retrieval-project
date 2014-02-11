@@ -1,5 +1,5 @@
 
-class Token(object):
+class VertItem(object):
     def __init__(self, line):
         fields = line.split(sep='\t')
 
