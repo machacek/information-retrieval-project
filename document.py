@@ -34,7 +34,7 @@ class DocumentTokens(object):
     This class represents documents converted from vertical format to list of tokens representation
     """
 
-    def __init__(self, document_vert, classifier):
+    def __init__(self, document_vert, config):
         self.docid, self.docno, self.date = document_vert.docid, document_vert.docno, document_vert.date
         self.title = classifier.convert_vert_list(document_vert.title)
         self.heading = classifier.convert_vert_list(document_vert.heading)
