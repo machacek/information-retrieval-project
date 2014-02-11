@@ -1,4 +1,4 @@
-from utils import Factory
+from factory import Factory
 
 from operator import attrgetter
 

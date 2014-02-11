@@ -1,4 +1,4 @@
-from utils import Factory
+from factory import Factory
 
 caser_factory = Factory({
         'yes' : lambda x: x.lower(),

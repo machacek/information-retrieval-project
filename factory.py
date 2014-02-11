@@ -13,4 +13,3 @@ class Factory(object):
         else:
             type_name = type_str
             return self.types[type_name]()
-

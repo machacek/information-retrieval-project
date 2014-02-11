@@ -1,4 +1,4 @@
-from utils import Factory
+from factory import Factory
 
 class MostFrequentStopwords(object):
     def __init__(self, count = 20):
