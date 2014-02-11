@@ -1,9 +1,12 @@
+from collections import Counter
+
 from .document import DocumentVert
 from .document import DocumentTokens
 from .document import DocumentBag
 from .topic import TopicVert
 from .topic import TopicTokens
 from .topic import TopicBag
+
 
 class VertCollection(object):
     def __init__(self, prefix, list_file):
@@ -54,7 +57,17 @@ class TopicTokensCollection(TokensCollection, TopicCollectionMixin):
     pass
 
 class DocumentBagCollection(BagCollection, DocumentCollectionMixin):
-    pass
+    def get_merged_counts(self):
+        title_counter = Counter()
+        heading_counter = Counter()
+        text_counter = Counter()
+
+        for document in self:
+            title_counter.update(document.title)
+            heading_counter.update(document.heading)
+            text_counter.update(document.text)
+
+        return (title_counter, heading_counter, text_counter)
 
 class TopicBagCollection(BagCollection, TopicCollectionMixin):
     pass
