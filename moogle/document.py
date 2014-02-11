@@ -1,4 +1,3 @@
-import os
 from vert import VertFormat
 
 class Document(VertFormat):
