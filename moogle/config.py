@@ -30,6 +30,7 @@ def parse_args():
 
     parser.add_argument("-p", "--pathprefix",
             help="path to which filenames are relative to",
+            dest="prefix",
             default="")
 
     parser.add_argument("-r",
