@@ -6,6 +6,9 @@ class Factory(object):
     def choices(self):
         return self.types.keys() 
 
+    def metavar(self):
+        return "{" + ",".join(self.choices()) + "}"
+
     def __call__(self, type_str):
         if ':' in type_str:
             type_name, config_str = type_str.split(':',2)

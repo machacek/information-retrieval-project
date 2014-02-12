@@ -52,20 +52,21 @@ def parse_args():
             default="no",
             type=caser_factory,
             dest="case",
-            choices=caser_factory.choices())
+            metavar=caser_factory.metavar())
 
     parser.add_argument("-t", "--termclasses",
             help="turning text into bag of words/terms (forms, stems, lemmas, classes)",
             default="wordforms",
             type=termclassifier_factory,
             dest="classifier",
-            choices=termclassifier_factory.choices())
+            metavar=termclassifier_factory.metavar())
 
     parser.add_argument("-s","--stopwords",
             help="removing stopwords",
             default="none",
             type=stopwords_factory,
-            dest="stopwords")
+            dest="stopwords",
+            metavar=stopwords_factory.metavar())
 
     return parser.parse_args()
 
