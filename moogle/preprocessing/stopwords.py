@@ -19,7 +19,7 @@ class MostFrequentStopwords(object):
         
 
 stopwords_factory = Factory({
-        'none' : set(),
+        'none' : set,
         'mostfrequent' : MostFrequentStopwords,
     })
 
