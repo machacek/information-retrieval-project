@@ -3,9 +3,12 @@
 from config import config
 from collection import DocumentCollection, TopicCollection
 
-
 def main():
-    pass
+    documents = DocumentCollection(config.documents_list)
+    topics = TopicCollection(config.topics_list)
+
+    for topic in topics:
+        print(topic.title)
 
 if __name__ == '__main__':
     main()

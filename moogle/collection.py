@@ -5,7 +5,7 @@ from document import Document
 from topic import Topic
 
 class Collection(object):
-    def __init__(self, prefix, list_file):
+    def __init__(self, list_file):
         self.names_list = [os.path.join(config.prefix, file_name.strip()) for file_name in list_file]
 
     def __iter__(self):
