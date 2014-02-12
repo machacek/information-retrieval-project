@@ -7,8 +7,14 @@ def main():
     documents = DocumentCollection(config.documents_list)
     topics = TopicCollection(config.topics_list)
 
-    for topic in topics:
-        print(topic.title)
+    # Stopwords could need to go through all documents
+    try:
+        config.stopwords.initialize_from_data(documents)
+    except AttributeError:
+        pass
+
+    for document in documents:
+        print(document.text)
 
 if __name__ == '__main__':
     main()

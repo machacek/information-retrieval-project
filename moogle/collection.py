@@ -1,4 +1,5 @@
 import os
+from collections import Counter
 
 from config import config
 from document import Document
