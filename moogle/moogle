@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 from config import config
-from document import DocumentCollection
-from topic import TopicCollection
+from collection import DocumentCollection, TopicCollection
 
 
 def main():

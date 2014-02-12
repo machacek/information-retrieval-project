@@ -1,6 +1,6 @@
 from vertformat import VertFormat
 
-class TopicVert(VertFormat):
+class Topic(VertFormat):
     """
     """
     

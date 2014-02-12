@@ -40,7 +40,7 @@ class VertFormat(object):
         return map(VertItem, lines)
 
     def convert_to_tokens(self, iterable):  
-        tokens = (config.case(config.classifier(item) for item in iterable)
+        tokens = (config.case(config.classifier(item)) for item in iterable)
         return filter(lambda x: x not in config.stopwords, tokens)
 
     def bag_of_words(self, soup_object):
