@@ -42,7 +42,7 @@ def parse_args():
             help="an output file",
             default=sys.stdout,
             type=argparse.FileType('r'),
-            dest="documents_list")
+            dest="output_file")
 
     #
     # Custom options
