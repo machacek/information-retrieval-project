@@ -1,4 +1,4 @@
-from vert import VertFormat
+from vertformat import VertFormat
 
 class TopicVert(VertFormat):
     """
