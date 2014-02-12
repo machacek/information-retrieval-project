@@ -1,5 +1,17 @@
 from factory import Factory
+from operator import attrgetter
 
+#
+# Casing
+#
+caser_factory = Factory(init=False, types={
+        'yes' : lambda x: x.lower(),
+        'no' : lambda x: x,
+    })
+
+#
+# Stopwords
+#
 class MostFrequentStopwords(object):
     def __init__(self, count = 20):
         self.count = int(count)
@@ -17,9 +29,16 @@ class MostFrequentStopwords(object):
     def __contains__(self, item):
         return self.stopwords.__contains__(item)
         
-
 stopwords_factory = Factory({
         'none' : set,
         'mostfrequent' : MostFrequentStopwords,
     })
 
+#
+# Termclassifying
+#
+termclassifier_factory = Factory(init=False, types={
+    'forms'         : attrgetter('form'),
+    'lemmas'        : attrgetter('lemma'),
+    'shortlemmas'   : lambda x: x.lemma.split('_')[0]
+    })

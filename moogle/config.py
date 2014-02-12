@@ -3,9 +3,9 @@ import argparse
 import sys
 
 # Custom imports
-from preprocessing.casing import caser_factory 
-from preprocessing.termclassing import termclassifier_factory
-from preprocessing.stopwords import stopwords_factory
+from preprocessing import caser_factory 
+from preprocessing import termclassifier_factory
+from preprocessing import stopwords_factory
 
 def parse_args():
     
