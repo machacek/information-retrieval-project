@@ -49,3 +49,8 @@ class VertFormat(object):
         tokens = self.convert_to_tokens(verts) 
         return Counter(tokens)
 
+    def section_length(self, tire):
+        section = getattr(self, tire)
+        return sum(section.values())
+
+
