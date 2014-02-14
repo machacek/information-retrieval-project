@@ -3,9 +3,8 @@ import argparse
 import sys
 
 # Custom imports
-from preprocessing import caser_factory 
-from preprocessing import termclassifier_factory
-from preprocessing import stopwords_factory
+from preprocessing import caser_factory, termclassifier_factory, stopwords_factory 
+from weighting import weighting_pattern, weighting_factory
 
 def parse_args():
     
@@ -67,6 +66,16 @@ def parse_args():
             type=stopwords_factory,
             dest="stopwords",
             metavar=stopwords_factory.metavar())
+
+    parser.add_argument("-w", "--weighting",
+            help="document and query weighting scheme given in the following pattern: " + weighting_pattern,
+            default="lnc.ltc",
+            type=weighting_factory,
+            dest="weighting",
+            metavar="ddd.qqq")
+            
+
+
 
     return parser.parse_args()
 

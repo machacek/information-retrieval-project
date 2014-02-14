@@ -9,13 +9,13 @@ class InvertedIndex(defaultdict):
     def __init__(self, documents=[], tire="text"):
         super(InvertedIndex, self).__init__(list)
         self.tire = tire
-        self.lengths = dict()
-        self.max_tf = defaultdict(lambda: 0)
+        self.N = 0
         self.index_documents(documents)
 
     def index_documents(self, documents):
         for document in documents:
             self.index_document(document)
+        self.index_ready()
 
     def index_document(self, document):
         docid = document.docid
@@ -27,10 +27,15 @@ class InvertedIndex(defaultdict):
             
             # Update max_tf
             self.max_tf[docid] = max(self.max_tf[docid], tf)
-            
-        # Store the length of the document
-        self.lengths[docid] = document.section_length(self.tire)
 
+        self.N += 1
+
+    def weight(self, term, docid, tf)
+        "Returns component of the matrix given by term and document"
+        term_frequency = self.term_frequency(term, docid, tf)
+        document_frequency = self.document_frequency(term)
+        return term_frequency * document_frequency
+            
     def retrieve(self, query):
         documents_scores = Counter()
 
