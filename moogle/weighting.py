@@ -1,7 +1,7 @@
 import re
 import argparse
 
-from math import log
+from math import log, sqrt
 from collections import namedtuple, defaultdict
 
 weighting_pattern = "[nlab][ntp][ncu]\.[nlab][ntp][ncu]"
@@ -117,7 +117,16 @@ class NoNormalization(IndexMixin):
 
 class CosineNormalization(IndexMixin):
     def index_ready(self):
-        # TODO
+        sum_of_squares = defaultdict(int)
+        for term, posting_list in self.items():
+            for posting in posting_list:
+                docid = posting.docid
+                tf = posting.tf
+                sum_of_squares[posting.docid] += self.weight(term, docid, tf) ** 2
+
+        self.doc_vector_lengths = {}
+        for docid, sum in sum_of_squares.items():
+            self.doc_vector_lengths[docid] = sqrt(sum) 
 
     def doc_vector_length(self, docid):
         return self.doc_vector_lengths[docid]
