@@ -129,24 +129,26 @@ document_frequency_classes = {
 # Normalization
 
 class NoNormalization(IndexMixin):
-    def doc_vector_length(self, docid):
+    def vector_norm(self, docid):
         return 1
 
 class CosineNormalization(IndexMixin):
     def index_ready(self):
         sum_of_squares = defaultdict(int)
         for term, posting_list in self.items():
-            for posting in posting_list:
-                docid = posting.docid
-                tf = posting.tf
-                sum_of_squares[posting.docid] += self.weight(term, docid, tf) ** 2
+            # optimization: we don't use self.weight method here
+            document_frequency = self.document_frequency(term)
+            for docid, tf in posting_list:
+                term_frequency = self.term_frequency(term, docid, tf)
+                weight = document_frequency * term_frequency
+                sum_of_squares[posting.docid] += weight ** 2
 
-        self.doc_vector_lengths = {}
+        self.vector_norms = {}
         for docid, sum in sum_of_squares.items():
-            self.doc_vector_lengths[docid] = sqrt(sum) 
+            self.vector_norms[docid] = sqrt(sum) 
 
-    def doc_vector_length(self, docid):
-        return self.doc_vector_lengths[docid]
+    def vector_norm(self, docid):
+        return self.vector_norms[docid]
 
 normalization_classes = {
         'n' : NoNormalization,
