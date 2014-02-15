@@ -8,7 +8,6 @@ weighting_pattern = "[nlab][ntp][ncu]\.[nlab][ntp][ncu]"
 config_re = re.compile(r"^%s$" % weighting_pattern)
 
 
-
 def weighting_factory(config_str):
 
     # Check that configuration string is valid
@@ -22,6 +21,10 @@ def weighting_factory(config_str):
             document = document_weighting_factory(config_str[0:3]),
             query = None,
         )
+
+#
+# Query weighting factory
+#
 
 #
 # Document weighting
@@ -93,6 +96,14 @@ class LogAveTermFrequency(IndexMixin):
     def term_frequency(self, term, docid, tf):
         return (1 + log(tf)) / (1 + self.ave_tf[docid])
 
+term_frequency_classes = {
+        'n' : NaturalTermFrequency,
+        'l' : LogarithmTermFrequency,
+        'a' : AugmentedTermFrequency,
+        'b' : BooleanTermFrequency,
+        'L' : LogAveTermFrequency,
+        }
+
 # Document frequency
 
 class NoDocumentFrequency(IndexMixin):
@@ -108,6 +119,12 @@ class ProbIdfDocumentFrequency(IndexMixin):
     def document_frequency(self, term):
         df_t = len(self[term])
         return max(0, log((self.N - df_t) / df_t))
+
+document_frequency_classes = {
+        'n' : NoDocumentFrequency,
+        't' : IdfDocumentFrequency,
+        'p' : ProbIdfDocumentFrequency,
+        }
 
 # Normalization
 
@@ -131,10 +148,19 @@ class CosineNormalization(IndexMixin):
     def doc_vector_length(self, docid):
         return self.doc_vector_lengths[docid]
 
+normalization_classes = {
+        'n' : NoNormalization,
+        'c' : CosineNormalization,
+        }
 
+# Factory method
 def document_weighting_factory(str):
-
-
+    DocumentWeighting = namedtuple("DocumentWeighting", ["term_frequency","document_frequency","normalization"])
+    return DocumentWeighting(
+            term_frequency = term_frequency_classes[str[0]],
+            document_frequency = document_frequency_classes[str[1]],
+            normalization = normalization_classes[str[2]],
+            )
 
 
 
