@@ -6,8 +6,13 @@ from collections import defaultdict, namedtuple, Counter
 
 Posting = namedtuple("Posting", ["docid","tf"])
 
-w = config.weighting.document
-class InvertedIndex(defaultdict, w.term_frequency, w.document_frequency, w.normalization):
+class InvertedIndex(
+        defaultdict,
+        config.weighting.term_frequency,
+        config.weighting.document_frequency,
+        config.weighting.normalization
+        ):
+
     def __init__(self, documents=[], tire="text"):
         super(InvertedIndex, self).__init__(list)
         self.tire = tire
@@ -28,11 +33,11 @@ class InvertedIndex(defaultdict, w.term_frequency, w.document_frequency, w.norma
 
         # Add postings to posting lists
         section = getattr(document, self.tire)
-        for term, tf in section:
+        for term, tf in section.items():
             self[term].append(Posting(docid, tf))
         self.N += 1
     
-    def weight(self, term, docid, tf)
+    def weight(self, term, docid, tf):
         "Returns component of the matrix given by term and document"
         document_frequency = self.document_frequency(term)
         return term_frequency * document_frequency

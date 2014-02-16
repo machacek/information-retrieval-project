@@ -54,8 +54,8 @@ def parse_args():
             metavar=caser_factory.metavar())
 
     parser.add_argument("-t", "--termclasses",
-            help="turning text into bag of words/terms (forms, stems, lemmas, classes)",
-            default="wordforms",
+            help="turning text into bag of words/terms",
+            default="forms",
             type=termclassifier_factory,
             dest="classifier",
             metavar=termclassifier_factory.metavar())
@@ -68,11 +68,11 @@ def parse_args():
             metavar=stopwords_factory.metavar())
 
     parser.add_argument("-w", "--weighting",
-            help="document and query weighting scheme given in the following pattern: " + weighting_pattern,
-            default="lnc.ltc",
+            help="document weighting scheme given in the following pattern: " + weighting_pattern,
+            default="lnc",
             type=weighting_factory,
             dest="weighting",
-            metavar="ddd.qqq")
+            metavar="ddd")
             
 
 

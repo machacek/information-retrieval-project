@@ -4,28 +4,6 @@ import argparse
 from math import log, sqrt
 from collections import namedtuple, defaultdict
 
-weighting_pattern = "[nlab][ntp][ncu]\.[nlab][ntp][ncu]"
-config_re = re.compile(r"^%s$" % weighting_pattern)
-
-
-def weighting_factory(config_str):
-
-    # Check that configuration string is valid
-    if not config_re.match(config_str):
-        raise argparse.ArgumentTypeError(
-                "config string %s is not valid, it should match this pattern:\n%s"
-                % (config_str, weighting_metavar))
-
-    WeightingConfig = namedtuple("WeightingConfig", ["document","query"])
-    return WeightingConfig(
-            document = document_weighting_factory(config_str[0:3]),
-            query = None,
-        )
-
-#
-# Query weighting factory
-#
-
 #
 # Document weighting
 #
@@ -50,7 +28,9 @@ class IndexMixin(object):
     def index_ready(self):
         pass
 
+#
 # Term frequency 
+#
 
 class NaturalTermFrequency(IndexMixin):
     def term_frequency(self, term, docid, tf):
@@ -103,8 +83,9 @@ term_frequency_classes = {
         'b' : BooleanTermFrequency,
         'L' : LogAveTermFrequency,
         }
-
+#
 # Document frequency
+#
 
 class NoDocumentFrequency(IndexMixin):
     def document_frequency(self, term):
@@ -126,7 +107,9 @@ document_frequency_classes = {
         'p' : ProbIdfDocumentFrequency,
         }
 
+#
 # Normalization
+#
 
 class NoNormalization(IndexMixin):
     def vector_norm(self, docid):
@@ -141,7 +124,7 @@ class CosineNormalization(IndexMixin):
             for docid, tf in posting_list:
                 term_frequency = self.term_frequency(term, docid, tf)
                 weight = document_frequency * term_frequency
-                sum_of_squares[posting.docid] += weight ** 2
+                sum_of_squares[docid] += weight ** 2
 
         self.vector_norms = {}
         for docid, sum in sum_of_squares.items():
@@ -155,14 +138,29 @@ normalization_classes = {
         'c' : CosineNormalization,
         }
 
+#
 # Factory method
-def document_weighting_factory(str):
+#
+
+choices = [
+        "".join(sorted(term_frequency_classes.keys())),
+        "".join(sorted(document_frequency_classes.keys())),
+        "".join(sorted(normalization_classes.keys())),
+        ]
+weighting_pattern = "[" + "][".join(choices) + "]"
+config_re = re.compile(r"^%s$" % weighting_pattern)
+
+def weighting_factory(config_str):
+    # Check that configuration string is valid
+    if not config_re.match(config_str):
+        raise argparse.ArgumentTypeError(
+                "config string %s is not valid, it should match this pattern:\n%s"
+                % (config_str, weighting_metavar))
+
     DocumentWeighting = namedtuple("DocumentWeighting", ["term_frequency","document_frequency","normalization"])
     return DocumentWeighting(
-            term_frequency = term_frequency_classes[str[0]],
-            document_frequency = document_frequency_classes[str[1]],
-            normalization = normalization_classes[str[2]],
+            term_frequency = term_frequency_classes[config_str[0]],
+            document_frequency = document_frequency_classes[config_str[1]],
+            normalization = normalization_classes[config_str[2]],
             )
-
-
 
