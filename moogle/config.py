@@ -4,7 +4,7 @@ import sys
 
 # Custom imports
 from preprocessing import caser_factory, termclassifier_factory, stopwords_factory 
-from weighting import weighting_pattern, weighting_factory
+from documentweighting import document_weighting_pattern, document_weighting_factory
 
 def parse_args():
     
@@ -40,7 +40,7 @@ def parse_args():
     parser.add_argument("-o",
             help="an output file",
             default=sys.stdout,
-            type=argparse.FileType('r'),
+            type=argparse.FileType('w'),
             dest="output_file")
 
     #
@@ -60,6 +60,7 @@ def parse_args():
             dest="classifier",
             metavar=termclassifier_factory.metavar())
 
+
     parser.add_argument("-s","--stopwords",
             help="removing stopwords",
             default="none",
@@ -68,15 +69,21 @@ def parse_args():
             metavar=stopwords_factory.metavar())
 
     parser.add_argument("-w", "--weighting",
-            help="document weighting scheme given in the following pattern: " + weighting_pattern,
+            help="document weighting scheme given in the following pattern: " + document_weighting_pattern,
             default="lnc",
-            type=weighting_factory,
+            type=document_weighting_factory,
             dest="weighting",
             metavar="ddd")
+    
+    parser.add_argument("-n","--subprocess",
+            help="number of paralell subprocesses (default 30)",
+            default="30",
+            type=int,
+            dest="workers",
+            metavar="N")
+    
+    return parser.parse_args()
             
 
-
-
-    return parser.parse_args()
 
 config = parse_args()

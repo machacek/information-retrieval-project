@@ -4,6 +4,7 @@ import argparse
 from math import log, sqrt
 from collections import namedtuple, defaultdict
 
+
 #
 # Document weighting
 #
@@ -69,7 +70,7 @@ class LogAveTermFrequency(IndexMixin):
                 acc[posting.docid] += posting.tf
                 counts[posting.docid] += 1
         self.ave_tf = {}
-        for docid, count in counts:
+        for docid, count in counts.items():
             self.ave_tf[docid] = acc[docid]/count 
         super().index_ready()
 
@@ -133,6 +134,9 @@ class CosineNormalization(IndexMixin):
     def vector_norm(self, docid):
         return self.vector_norms[docid]
 
+class PivotedUniqueNormalization(IndexMixin):
+    pass
+
 normalization_classes = {
         'n' : NoNormalization,
         'c' : CosineNormalization,
@@ -147,10 +151,10 @@ choices = [
         "".join(sorted(document_frequency_classes.keys())),
         "".join(sorted(normalization_classes.keys())),
         ]
-weighting_pattern = "[" + "][".join(choices) + "]"
-config_re = re.compile(r"^%s$" % weighting_pattern)
+document_weighting_pattern = "[" + "][".join(choices) + "]"
+config_re = re.compile(r"^%s$" % document_weighting_pattern)
 
-def weighting_factory(config_str):
+def document_weighting_factory(config_str):
     # Check that configuration string is valid
     if not config_re.match(config_str):
         raise argparse.ArgumentTypeError(

@@ -1,15 +1,22 @@
 import os
+import sys
+import warnings
 from collections import Counter
 from bs4 import BeautifulSoup
 
 from config import config
 
+warnings.simplefilter("always")
+
 class VertItem(object):
     def __init__(self, line):
+        self.valid = True
         fields = line.split(sep='\t')
 
         if len(fields) != 6:
-            raise ValueError("Line \"%s\" has %s fields" % (fields, len(fields)))
+            warnings.warn("Line \"%s\" has %s fields" % (line, len(fields)))
+            self.valid = False
+            return
         
         self.order  = int(fields[0])
         self.form   = fields[1]
@@ -20,14 +27,22 @@ class VertItem(object):
         # self.parrent  = fields[4]
         # self.syn_type = fields[5]
 
+    def __bool__(self):
+        return self.valid
+
 class VertFormat(object):
     """
     """
 
     def __init__(self, path):
         with open(path, 'r') as file:
-            soup = BeautifulSoup(file, "xml") 
-            self.process_soup(soup)
+            try:
+                soup = BeautifulSoup(file, "xml") 
+                self.process_soup(soup)
+            except ValueError:
+                print("Error in file: %s" % path, file = sys.stderr)
+                raise
+
     
     def parse_vertical_format(self, soup_object):
 
@@ -38,7 +53,7 @@ class VertFormat(object):
         lines = soup_object.text.splitlines()
         lines = (line.strip() for line in lines)
         lines = filter(None, lines)
-        return map(VertItem, lines)
+        return filter(None, map(VertItem, lines))
 
     def convert_to_tokens(self, iterable):  
         tokens = (config.case(config.classifier(item)) for item in iterable)

@@ -6,7 +6,6 @@ from index import InvertedIndex
 
 def main():
     documents = DocumentCollection(config.documents_list)
-    topics = TopicCollection(config.topics_list)
 
     # Stopwords may need to go through all documents
     try:
@@ -14,9 +13,16 @@ def main():
     except AttributeError:
         pass
 
-    index = InvertedIndex(documents)
+    index = InvertedIndex(documents)     
 
-    print(index)
+    topics = TopicCollection(config.topics_list)
+    for topic in topics:
+        query = topic.title
+        result = index.retrieve(query)
+
+        for rank, (docid, score) in enumerate(result):
+            print(topic.num, 0, docid, rank, score, config.run_id, sep='\t', file=config.output_file)
+        
 
 if __name__ == '__main__':
     main()
