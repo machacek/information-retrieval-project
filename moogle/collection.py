@@ -2,33 +2,29 @@ import os
 from collections import Counter
 from multiprocessing import Pool
 
-from config import config
 from document import Document
 from topic import Topic
 
-pool = Pool(config.workers)
+def init_type(arg_tuple):
+    type = arg_tuple[0]
+    args = arg_tuple[1:]
+    return type(*args)
 
 class Collection(object):
-    def __init__(self, list_file):
-        self.names_list = [os.path.join(config.prefix, file_name.strip()) for file_name in list_file]
+    def __init__(self, list_file, case, classes, prefix='', workers=20):
+        self.case = case
+        self.classes = classes
+        self.names_list = [os.path.join(prefix, file_name.strip()) for file_name in list_file]
+        self.workers = workers
 
     def __iter__(self):
-        return pool.imap(self.type, self.names_list)
+        args = ((self.type, name, self.case, self.classes) for name in self.names_list)
+        pool = Pool(min(self.workers,len(self.names_list)))
+        return pool.imap(init_type, args)
+        pool.close()
 
 class TopicCollection(Collection):
     type = Topic
 
 class DocumentCollection(Collection):
     type = Document
-
-    def get_merged_counts(self):
-        title_counter = Counter()
-        heading_counter = Counter()
-        text_counter = Counter()
-
-        for document in self:
-            title_counter.update(document.title)
-            heading_counter.update(document.heading)
-            text_counter.update(document.text)
-
-        return (title_counter, heading_counter, text_counter)

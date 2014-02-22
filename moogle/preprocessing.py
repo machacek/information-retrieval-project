@@ -1,5 +1,6 @@
 from factory import Factory
 from operator import attrgetter
+from collections import Counter
 
 #
 # Casing
@@ -15,16 +16,17 @@ caser_factory = Factory(init=False, types={
 class MostFrequentStopwords(object):
     def __init__(self, count = 20):
         self.count = int(count)
-        self.stopwords = {}
 
-    def initialize_from_data(self, bag_collection):
-        title_counter, heading_counter, text_counter = bag_collection.get_merged_counts()
+    def initialize_from_zone_index(self, zone_index):
+        term_counter = Counter()
+        for index in zone_index.values():
+            for term, posting_list in index.items():
+                sum = 0
+                for posting in posting_list:
+                    sum += posting.tf
+                term_counter[term] += sum
 
-        # for now, we are going to merge all sections
-        text_counter.update(title_counter)
-        text_counter.update(heading_counter)
-        
-        self.stopwords = dict(text_counter.most_common(self.count))
+        self.stopwords = dict(term_counter.most_common(self.count))
 
     def __contains__(self, item):
         return self.stopwords.__contains__(item)
@@ -32,6 +34,7 @@ class MostFrequentStopwords(object):
 stopwords_factory = Factory({
         'none' : set,
         'mostfrequent' : MostFrequentStopwords,
+        'custom' : lambda *x: set(x),
     })
 
 #

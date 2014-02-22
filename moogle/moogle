@@ -1,26 +1,43 @@
 #!/usr/bin/env python3
 
-from config import config
+from config import parse_args
 from collection import DocumentCollection, TopicCollection
-from index import ZoneIndex
+from index import ZoneInvertedIndex, ZoneRetrievalSystem
 from output import output
 
 def main():
-    documents = DocumentCollection(config.documents_list)
+    
+    config = parse_args()
 
-    # Stopwords may need to go through all documents
-    try:
-        config.stopwords.initialize_from_data(documents)
-    except AttributeError:
-        pass
+    documents = DocumentCollection(config.documents_list,
+            case=config.case,
+            classes=config.classes,
+            prefix=config.prefix,
+            workers=config.workers)
+    
+    topics = TopicCollection(config.topics_list,
+            case=config.case,
+            classes=config.classes,
+            prefix=config.prefix,
+            workers=config.workers)
+     
+    zone_index = ZoneInvertedIndex(documents)
+    zone_index.init_stopwords(config.stopwords) # Stopwords may need to be initialized
 
-    index = ZoneIndex(documents, zones=config.zones)     
+    zone_retrieval_system = ZoneRetrievalSystem(zone_index,
+            zone_weights=config.zone_weights,
+            stopwords=config.stopwords,
+            document_weighting=config.weighting)
 
-    topics = TopicCollection(config.topics_list)
     for topic in topics:
         query = topic.title
-        result = index.retrieve(query)
-        output(topic, result)
+        result = zone_retrieval_system.retrieve(query)
+        output(topic, result, config.run_id, config.output_file)
+
+    config.documents_list.close()
+    config.topics_list.close()
+    config.output_file.close()
+    
 
 if __name__ == '__main__':
     main()

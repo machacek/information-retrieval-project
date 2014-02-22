@@ -1,12 +1,13 @@
 # Std library imports
 import argparse
 import sys
+from collections import defaultdict
 
 # Custom imports
 from preprocessing import caser_factory, termclassifier_factory, stopwords_factory 
 from documentweighting import document_weighting_pattern, document_weighting_factory
 
-def parse_args():
+def parse_args(args=None):
     
     parser = argparse.ArgumentParser(
             description="Creates index from given list of documents and performs documents retrieval for given list of topics",
@@ -49,15 +50,15 @@ def parse_args():
     parser.add_argument("-c", "--lowercase",
             help="lowercasing",
             default="no",
-            type=caser_factory,
+            #type=caser_factory,
             dest="case",
             metavar=caser_factory.metavar())
 
     parser.add_argument("-t", "--termclasses",
             help="turning text into bag of words/terms",
             default="forms",
-            type=termclassifier_factory,
-            dest="classifier",
+            #type=termclassifier_factory,
+            dest="classes",
             metavar=termclassifier_factory.metavar())
 
 
@@ -77,27 +78,28 @@ def parse_args():
     
     parser.add_argument("-z","--zones",
             help="zones and their weights",
-            default="title:1,heading:1,text:1",
+            default="title:0,heading:0,text:1",
             type=zone_weight_factory,
-            dest="zones",
+            dest="zone_weights",
             metavar="zone1:weight1[,zone2:weight2[...]")
     
-    parser.add_argument("-n","--subprocess",
+    parser.add_argument("-n","--workers",
             help="number of paralell subprocesses (default 30)",
             default="30",
             type=int,
             dest="workers",
             metavar="N")
-    
-    return parser.parse_args()
+
+    if args is None:
+        return parser.parse_args()
+    else:
+        return parser.parse_args(args)
 
 def zone_weight_factory(str_weights):
-    zones = []
+    weights = defaultdict(float)
     for str_zone_weight in str_weights.split(','):
         zone, str_weight = str_zone_weight.split(':',2)
-        weight = int(str_weight)
-        zones.append((zone,weight))
-    return zones
+        weight = float(str_weight)
+        weights[zone] = weight
+    return weights
 
-
-config = parse_args()

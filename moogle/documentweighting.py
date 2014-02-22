@@ -44,7 +44,7 @@ class LogarithmTermFrequency(IndexMixin):
 class AugmentedTermFrequency(IndexMixin):
     def index_ready(self):
         self.max_tf = defaultdict(int)
-        for posting_list in self.values():
+        for posting_list in self.inverted_index.values():
             for posting in posting_list:
                 self.max_tf[posting.docid] = max(self.max_tf[posting.docid], posting.tf)
         super().index_ready()
@@ -65,7 +65,7 @@ class LogAveTermFrequency(IndexMixin):
     def index_ready(self):
         acc = defaultdict(int)
         counts = defaultdict(int) 
-        for posting_list in self.values():
+        for posting_list in self.inverted_index.values():
             for posting in posting_list:
                 acc[posting.docid] += posting.tf
                 counts[posting.docid] += 1
@@ -94,13 +94,13 @@ class NoDocumentFrequency(IndexMixin):
 
 class IdfDocumentFrequency(IndexMixin):
     def document_frequency(self, term):
-        df_t = len(self[term])
-        return log( self.N / df_t )
+        df_t = len(self.inverted_index[term])
+        return log( self.inverted_index.N / df_t )
 
 class ProbIdfDocumentFrequency(IndexMixin):
     def document_frequency(self, term):
-        df_t = len(self[term])
-        return max(0, log((self.N - df_t) / df_t))
+        df_t = len(self.inverted_index[term])
+        return max(0, log((self.inverted_index.N - df_t) / df_t))
 
 document_frequency_classes = {
         'n' : NoDocumentFrequency,
@@ -119,7 +119,7 @@ class NoNormalization(IndexMixin):
 class CosineNormalization(IndexMixin):
     def index_ready(self):
         sum_of_squares = defaultdict(int)
-        for term, posting_list in self.items():
+        for term, posting_list in self.inverted_index.items():
             # optimization: we don't use self.weight method here
             document_frequency = self.document_frequency(term)
             for docid, tf in posting_list:

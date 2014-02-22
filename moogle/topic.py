@@ -1,8 +1,6 @@
 from vertformat import VertFormat
 
 class Topic(VertFormat):
-    """
-    """
     
     def process_soup(self, soup):
         # These shoud be present for sure

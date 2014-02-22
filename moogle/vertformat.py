@@ -4,7 +4,7 @@ import warnings
 from collections import Counter
 from bs4 import BeautifulSoup
 
-from config import config
+from preprocessing import termclassifier_factory, caser_factory
 
 warnings.simplefilter("always")
 
@@ -31,10 +31,9 @@ class VertItem(object):
         return self.valid
 
 class VertFormat(object):
-    """
-    """
-
-    def __init__(self, path):
+    def __init__(self, path, caser, classifier):
+        self.caser = caser_factory(caser)
+        self.classifier = termclassifier_factory(classifier)
         with open(path, 'r') as file:
             try:
                 soup = BeautifulSoup(file, "xml") 
@@ -42,6 +41,9 @@ class VertFormat(object):
             except ValueError:
                 print("Error in file: %s" % path, file = sys.stderr)
                 raise
+
+        del self.caser
+        del self.classifier
 
     
     def parse_vertical_format(self, soup_object):
@@ -56,8 +58,9 @@ class VertFormat(object):
         return filter(None, map(VertItem, lines))
 
     def convert_to_tokens(self, iterable):  
-        tokens = (config.case(config.classifier(item)) for item in iterable)
-        return filter(lambda x: x not in config.stopwords, tokens)
+        tokens = (self.caser(self.classifier(item)) for item in iterable)
+        return tokens
+        #return filter(lambda x: x not in config.stopwords, tokens)
 
     def bag_of_words(self, soup_object):
         verts = self.parse_vertical_format(soup_object)
