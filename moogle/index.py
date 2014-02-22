@@ -86,8 +86,3 @@ class ZoneIndex(object):
                 zone_result[docid] *= wei
             result += zone_result
         return result
-
-
-
-
-
