@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from preprocessing import termclassifier_factory, caser_factory
 
-warnings.simplefilter("always")
+#warnings.simplefilter("always")
 
 class VertItem(object):
     def __init__(self, line):

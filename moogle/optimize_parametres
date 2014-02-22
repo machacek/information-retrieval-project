@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+# Std library imports
+import argparse
+import sys
+import tempfile
+import os
+import subprocess
+from collections import defaultdict
+from multiprocessing import Pool
+
+from config import parse_args as moogle_parse_args
+from collection import DocumentCollection, TopicCollection
+from index import ZoneInvertedIndex, ZoneRetrievalSystem
+from preprocessing import caser_factory, termclassifier_factory, stopwords_factory 
+from documentweighting import document_weighting_pattern, document_weighting_factory
+from output import output
+from query import query_factory
+import itertools
+from documentweighting import term_frequency_classes, document_frequency_classes
+from query import query_factory
+
+def explore_parse_args():
+    
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-q",
+            help="a file with a list of topic filenames",
+            required=True,
+            type=argparse.FileType('r'),
+            dest="topics_list") 
+    
+    parser.add_argument("-d",
+            help="a file with a list of document filenames",
+            required=True,
+            type=argparse.FileType('r'),
+            dest="documents_list")
+    
+    parser.add_argument("-r",
+            help="qrel file",
+            required=True,
+            dest="qrel_file")
+
+    parser.add_argument("-p", "--pathprefix",
+            help="path to which filenames are relative to",
+            required=True,
+            dest="prefix",
+            default="")
+
+    parser.add_argument("-i",
+            help="a label identifying particular experiment run",
+            default="no_id",
+            dest="id")
+
+    parser.add_argument("-c", "--lowercase",
+            help="lowercasing",
+            required=True,
+            dest="case",
+            metavar=caser_factory.metavar())
+
+    parser.add_argument("-t", "--termclasses",
+            help="turning text into bag of words/terms",
+            required=True,
+            dest="classes",
+            metavar=termclassifier_factory.metavar())
+    
+    parser.add_argument("-n","--workers",
+            help="number of paralell subprocesses (default 30)",
+            default="30",
+            type=int,
+            dest="workers",
+            metavar="N")
+
+    return parser.parse_args()
+
+explore_config = explore_parse_args()
+
+def eval(zone_index, topics, args): 
+    moogle_config = moogle_parse_args(args)
+     
+    zone_index.init_stopwords(moogle_config.stopwords) # Stopwords may need to be initialized
+
+    zone_retrieval_system = ZoneRetrievalSystem(zone_index,
+            zone_weights=moogle_config.zone_weights,
+            stopwords=moogle_config.stopwords,
+            document_weighting=moogle_config.weighting)
+   
+    with tempfile.NamedTemporaryFile(delete=False, mode='w') as temp: 
+        for topic in topics:
+            query = moogle_config.query(topic)
+            result = zone_retrieval_system.retrieve(query)
+            output(topic, result, moogle_config.run_id, temp)
+        temp.close()
+        
+        trec_eval = os.path.join(explore_config.prefix, "eval/trec_eval")
+
+        lines = subprocess.check_output([trec_eval, explore_config.qrel_file, temp.name]).decode(encoding='UTF-8').splitlines()
+        map_line = next(filter(lambda x: x.startswith("map"), lines))
+        map_score = map_line.split()[2]
+
+        os.remove(temp.name)
+
+    return map_score
+
+def call_eval(arg_tuple):
+    return eval(*arg_tuple)
+
+def iter_args():
+    stopwords_choices = ["none"]
+    weight_choices = list(map(lambda x: ''.join(x), itertools.product(term_frequency_classes.keys(), document_frequency_classes.keys(), 'c')))
+    query_choices = query_factory.choices()
+    zone_weights_choices = ["title:0,heading:0,text:1", "title:1,heading:1,text:1", "title:3,heading:2,text:1"]
+
+    for stopwords, weight, query, zone_weights in itertools.product(stopwords_choices, weight_choices, query_choices, zone_weights_choices):
+        yield [
+                "-q", explore_config.topics_list.name,
+                "-d", explore_config.documents_list.name,
+                "-p", explore_config.prefix,
+                "-c", explore_config.case,
+                "-t", explore_config.classes,
+                "-s", stopwords,
+                "-w", weight,
+                "-Q", query,
+                "-z", zone_weights,
+                ]
+
+
+def main():
+     
+    documents = DocumentCollection(explore_config.documents_list,
+            case=explore_config.case,
+            classes=explore_config.classes,
+            prefix=explore_config.prefix,
+            workers=explore_config.workers)
+     
+    zone_index = ZoneInvertedIndex(documents)
+     
+    topics = list(TopicCollection(explore_config.topics_list,
+            case=explore_config.case,
+            classes=explore_config.classes,
+            prefix=explore_config.prefix,
+            workers=explore_config.workers))
+    
+    for args in iter_args():
+        result = eval(zone_index, topics, args)
+        print(" ".join(["./moogle"] + args), result, sep="\t", file=sys.stdout)
+        #print(" ".join(["./moogle"] + args), sep="\t")
+
+if __name__ == '__main__':
+    main()
