@@ -75,6 +75,13 @@ def parse_args():
             dest="weighting",
             metavar="ddd")
     
+    parser.add_argument("-z","--zones",
+            help="zones and their weights",
+            default="title:1,heading:1,text:1",
+            type=zone_weight_factory,
+            dest="zones",
+            metavar="zone1:weight1[,zone2:weight2[...]")
+    
     parser.add_argument("-n","--subprocess",
             help="number of paralell subprocesses (default 30)",
             default="30",
@@ -83,7 +90,14 @@ def parse_args():
             metavar="N")
     
     return parser.parse_args()
-            
+
+def zone_weight_factory(str_weights):
+    zones = []
+    for str_zone_weight in str_weights.split(','):
+        zone, str_weight = str_zone_weight.split(':',2)
+        weight = int(str_weight)
+        zones.append((zone,weight))
+    return zones
 
 
 config = parse_args()
