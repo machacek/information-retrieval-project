@@ -3,6 +3,8 @@ from math import log
 from config import config
 from collections import defaultdict, namedtuple, Counter
 
+import warnings
+
 
 Posting = namedtuple("Posting", ["docid","tf"])
 
@@ -13,9 +15,9 @@ class InvertedIndex(
         config.weighting.normalization
         ):
 
-    def __init__(self, documents=[], tire="text"):
+    def __init__(self, documents=[], zone="text"):
         super(InvertedIndex, self).__init__(list)
-        self.tire = tire
+        self.zone = zone
         self.N = 0
         self.index_documents(documents)
 
@@ -32,7 +34,7 @@ class InvertedIndex(
         docid = document.docid
 
         # Add postings to posting lists
-        section = getattr(document, self.tire)
+        section = getattr(document, self.zone)
         for term, tf in section.items():
             self[term].append(Posting(docid, tf))
         self.N += 1
@@ -54,12 +56,37 @@ class InvertedIndex(
                 scores[docid] += term_frequency * document_frequency
 
         # Normalizing
-        normalized_log_scores = Counter()
+        normalized_scores = Counter()
         for docid, score in scores.items():
             norm = self.vector_norm(docid)
-            normalized_log_scores[docid] = log(score) - log(norm)
+            normalized_scores[docid] = score / norm 
+        return normalized_scores
 
-        return normalized_log_scores.most_common()
+class ZoneIndex(object):
+    def __init__(documents, zones):
+        self.indexes = []
+        self.weights = []
+        for zone, weight in zones:
+            self.indexes.append(InvertedIndex(documents, zone=zone))
+            self.weights.append(weight)
+
+    def index_documents(self, documents):
+        for index in self.indexes:
+            index.index_documents(documents)
+    
+    def index_document(self, document):
+        for index in self.indexes:
+            index.index_document(document)
+
+    def retrieve(self, query):
+        result = Counter()
+        for index, weight in zip(self.indexex, self.weights):
+            zone_result = index.retrieve(query)
+            for docid in zone_result:
+                zone_result[docid] *= wei
+            result += zone_result
+        return result
+
 
 
 
