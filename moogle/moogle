@@ -2,7 +2,7 @@
 
 from config import config
 from collection import DocumentCollection, TopicCollection
-from index import InvertedIndex
+from index import ZoneIndex
 from output import output
 
 def main():
@@ -14,15 +14,13 @@ def main():
     except AttributeError:
         pass
 
-    index = InvertedIndex(documents)     
+    index = ZoneIndex(documents, zones=config.zones)     
 
     topics = TopicCollection(config.topics_list)
     for topic in topics:
         query = topic.title
         result = index.retrieve(query)
         output(topic, result)
-
-        
 
 if __name__ == '__main__':
     main()

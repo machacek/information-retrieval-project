@@ -63,7 +63,7 @@ class InvertedIndex(
         return normalized_scores
 
 class ZoneIndex(object):
-    def __init__(documents, zones):
+    def __init__(self, documents, zones):
         self.indexes = []
         self.weights = []
         for zone, weight in zones:
@@ -80,9 +80,9 @@ class ZoneIndex(object):
 
     def retrieve(self, query):
         result = Counter()
-        for index, weight in zip(self.indexex, self.weights):
+        for index, weight in zip(self.indexes, self.weights):
             zone_result = index.retrieve(query)
             for docid in zone_result:
-                zone_result[docid] *= wei
+                zone_result[docid] *= weight
             result += zone_result
         return result
