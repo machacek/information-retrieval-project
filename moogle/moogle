@@ -20,7 +20,7 @@ def main():
     for topic in topics:
         query = topic.title
         result = index.retrieve(query)
-        output(result)
+        output(topic, result)
 
         
 
