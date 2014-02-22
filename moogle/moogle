@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from multiprocessing import Pool
 
 from config import parse_args
 from collection import DocumentCollection, TopicCollection
@@ -15,11 +16,11 @@ def main():
             prefix=config.prefix,
             workers=config.workers)
     
-    topics = TopicCollection(config.topics_list,
+    topics = list(TopicCollection(config.topics_list,
             case=config.case,
             classes=config.classes,
             prefix=config.prefix,
-            workers=config.workers)
+            workers=config.workers))
      
     zone_index = ZoneInvertedIndex(documents)
     zone_index.init_stopwords(config.stopwords) # Stopwords may need to be initialized
@@ -29,10 +30,16 @@ def main():
             stopwords=config.stopwords,
             document_weighting=config.weighting)
 
-    for topic in topics:
-        query = topic.title
-        result = zone_retrieval_system.retrieve(query)
+    queries = map(config.query, topics)
+
+    pool = Pool(config.workers)
+    results = pool.imap(zone_retrieval_system.retrieve, queries) 
+    pool.close()
+
+    for topic, result in zip(topics,results):
         output(topic, result, config.run_id, config.output_file)
+
+
 
     config.documents_list.close()
     config.topics_list.close()

@@ -2,6 +2,7 @@
 import argparse
 import sys
 from collections import defaultdict
+from query import query_factory
 
 # Custom imports
 from preprocessing import caser_factory, termclassifier_factory, stopwords_factory 
@@ -82,6 +83,14 @@ def parse_args(args=None):
             type=zone_weight_factory,
             dest="zone_weights",
             metavar="zone1:weight1[,zone2:weight2[...]")
+
+    parser.add_argument("-Q", "--query",
+            help="query construction",
+            default="title",
+            type=query_factory,
+            dest="query",
+            metavar=stopwords_factory.metavar())
+
     
     parser.add_argument("-n","--workers",
             help="number of paralell subprocesses (default 30)",
