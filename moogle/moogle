@@ -9,18 +9,12 @@ from output import output
 def main():
     
     config = parse_args()
-
+  
     documents = DocumentCollection(config.documents_list,
             case=config.case,
             classes=config.classes,
             prefix=config.prefix,
             workers=config.workers)
-    
-    topics = list(TopicCollection(config.topics_list,
-            case=config.case,
-            classes=config.classes,
-            prefix=config.prefix,
-            workers=config.workers))
      
     zone_index = ZoneInvertedIndex(documents)
     zone_index.init_stopwords(config.stopwords) # Stopwords may need to be initialized
@@ -29,22 +23,21 @@ def main():
             zone_weights=config.zone_weights,
             stopwords=config.stopwords,
             document_weighting=config.weighting)
+    
+    topics = TopicCollection(config.topics_list,
+            case=config.case,
+            classes=config.classes,
+            prefix=config.prefix,
+            workers=config.workers)
 
-    queries = map(config.query, topics)
-
-    pool = Pool(config.workers)
-    results = pool.imap(zone_retrieval_system.retrieve, queries) 
-    pool.close()
-
-    for topic, result in zip(topics,results):
+    for topic in topics:
+        query = config.query(topic)
+        result = zone_retrieval_system.retrieve(query)
         output(topic, result, config.run_id, config.output_file)
-
-
 
     config.documents_list.close()
     config.topics_list.close()
-    config.output_file.close()
-    
+    config.output_file.close()    
 
 if __name__ == '__main__':
     main()
