@@ -3,6 +3,7 @@
 from config import config
 from collection import DocumentCollection, TopicCollection
 from index import InvertedIndex
+from output import output
 
 def main():
     documents = DocumentCollection(config.documents_list)
@@ -19,9 +20,8 @@ def main():
     for topic in topics:
         query = topic.title
         result = index.retrieve(query)
+        output(result)
 
-        for rank, (docid, score) in enumerate(result):
-            print(topic.num, 0, docid, rank, score, config.run_id, sep='\t', file=config.output_file)
         
 
 if __name__ == '__main__':
