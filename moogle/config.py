@@ -72,7 +72,7 @@ def parse_args(args=None):
 
     parser.add_argument("-w", "--weighting",
             help="document weighting scheme given in the following pattern: " + document_weighting_pattern,
-            default="lnc",
+            default="nnc",
             type=document_weighting_factory,
             dest="weighting",
             metavar="ddd")
@@ -93,8 +93,8 @@ def parse_args(args=None):
 
     
     parser.add_argument("-n","--workers",
-            help="number of paralell subprocesses (default 30)",
-            default="30",
+            help="number of paralell subprocesses (default 10)",
+            default="10",
             type=int,
             dest="workers",
             metavar="N")
