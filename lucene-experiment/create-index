@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
+import sys
+
+#
+# Moogle imports
+#
+from config import config
+from collection import DocumentCollection
+from vertformatanalyzer import VertFormatAnalyzer
+
+#
+# Lucene imports
+#
+import lucene
+from lucene import SimpleFSDirectory, File, IndexWriter, IndexWriterConfig, Version, Document, Field, StandardAnalyzer
+
+def index_document(index_writer, document):
+    doc = Document()
+    doc.add(Field("docid", document.docid, Field.Store.YES, Field.Index.NO))
+    doc.add(Field("title", document.title, Field.Store.NO, Field.Index.ANALYZED))
+    doc.add(Field("heading", document.heading, Field.Store.NO, Field.Index.ANALYZED))
+    doc.add(Field("text", document.text, Field.Store.NO, Field.Index.ANALYZED))
+    index_writer.addDocument(doc)
+
+def main():    
+
+    lucene.initVM()
+
+    directory = SimpleFSDirectory(File(config.index))
+    # analyzer = StandardAnalyzer(Version.LUCENE_CURRENT)
+    analyzer = VertFormatAnalyzer()
+    writer_config = IndexWriterConfig(Version.LUCENE_CURRENT, analyzer)
+    writer = IndexWriter(directory, writer_config)
+
+    documents = DocumentCollection(config.file_list, prefix=config.prefix)
+
+    print("Adding documents", end="", file=sys.stderr)
+    for document in documents:
+        index_document(writer, document)
+        print(".", end="", file=sys.stderr)
+    print()
+
+    print("Optimizing index...", end=" ", file=sys.stderr)
+    writer.optimize()
+    print("Done", file=sys.stderr)
+
+    print("Closing index...", end=" ", file=sys.stderr)
+    writer.close()
+    print("Done", file=sys.stderr)
+
+
+
+if __name__ == '__main__':
+    main()
