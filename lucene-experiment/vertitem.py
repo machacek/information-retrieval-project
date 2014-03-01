@@ -1,7 +1,7 @@
 class VertItem(object):
     def __init__(self, line):
         self.valid = True
-        fields = line.split(sep='\t')
+        fields = line.split('\t')
 
         if len(fields) != 6:
             warnings.warn("Line \"%s\" has %s fields" % (line, len(fields)))
@@ -19,3 +19,6 @@ class VertItem(object):
 
     def __bool__(self):
         return self.valid
+
+    def __unicode__(self):
+        return u"<VertItem form: %s, lemma: %s, tag: %s>" %(self.form, self.lemma, self.tag)

@@ -55,8 +55,8 @@ search_index performs retrieval for given index and list of topics""",
     parser.add_argument("-t", "--termclasses",
             help="turning text into bag of words/terms",
             default="forms",
-            #type=termclassifier_factory,
-            dest="classes",
+            type=termclassifier_factory,
+            dest="term",
             metavar=termclassifier_factory.metavar())
 
 
