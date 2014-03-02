@@ -48,10 +48,13 @@ class NonEmptyLineFilter(FilterBase):
 
 class TermClassFilter(TransformBase):
     def transform(self, string):
-        vert_item = VertItem(string)
-        if vert_item:
-            return config.term(vert_item)
-        else:
+        try:
+            vert_item = VertItem(string)
+            transformed = config.term(vert_item)
+            print transformed
+            return transformed
+        except Exception, e:
+            print e
             return ""
 
 class VertFormatAnalyzer(lucene.PythonAnalyzer):
@@ -60,9 +63,23 @@ class VertFormatAnalyzer(lucene.PythonAnalyzer):
         lines = StripLineTransform(lines)
         lines = NonEmptyLineFilter(lines)
         classes = TermClassFilter(lines)
-        return classes
+        classes = NonEmptyLineFilter(classes)
 
         if config.lowercase:
             return lucene.LowerCaseFilter(classes)
         else:
             return classes
+
+    def preproces_query(self, query_str):
+        reader = lucene.StringReader(query_str)
+        token_stream = self.tokenStream("", reader)
+        result = []
+
+        while token_stream.incrementToken():
+            result.append(token_stream.getAttribute(lucene.CharTermAttribute.class_).toString())
+
+        return " ".join(result)
+
+class WhitespaceAnalyzer(lucene.PythonAnalyzer):
+    def tokenStream(self, fieldName, reader):
+        return lucene.WhitespaceTokenizer(reader)

@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from __future__ import print_function
+
+import sys
+
+#
+# Moogle imports
+#
+from config import config
+from collection import TopicCollection
+from vertformatanalyzer import VertFormatAnalyzer, WhitespaceAnalyzer
+
+#
+# Lucene imports
+#
+import lucene
+from lucene import SimpleFSDirectory, File, IndexSearcher, Version, Document, Field, QueryParser, StandardAnalyzer
+
+class IndexSearcherWrapper(object):
+    def __init__(self, location):
+        lucene.initVM()
+        directory = SimpleFSDirectory(File(location))
+        self.analyzer = VertFormatAnalyzer()
+        self.searcher = IndexSearcher(directory)
+        self.query_parser = QueryParser(Version.LUCENE_CURRENT, "text", WhitespaceAnalyzer())
+
+    def search(self, topic):
+        query_str = self.analyzer.preproces_query(topic.title)
+        query = self.query_parser.parse(query_str)
+        MAX = 5000
+        return self.searcher.search(query, MAX)
+
+def main():    
+    topics = TopicCollection(config.file_list, prefix=config.prefix)
+    index = IndexSearcherWrapper(config.index)
+
+    for topic in topics:
+        hits = index.search(topic)
+        for rank, hit in enumerate(hits.scoreDocs):
+            doc = index.searcher.doc(hit.doc)
+            print(topic.num, 0, doc.get("docid"), rank, hit.score, config.run_id, sep='\t', file=config.output_file)
+
+if __name__ == '__main__':
+    main()

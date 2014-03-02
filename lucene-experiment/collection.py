@@ -10,10 +10,10 @@ class Collection(object):
         self.names_list = [os.path.join(prefix, file_name.strip()) for file_name in list_file]
 
     def __iter__(self):
-        pool = Pool(min(config.workers,len(self.names_list)))
-        return pool.imap(self.type, self.names_list)
-        pool.close()
-        #return imap(self.type, self.names_list)
+        #pool = Pool(min(config.workers,len(self.names_list)))
+        #return pool.imap(self.type, self.names_list)
+        #pool.close()
+        return imap(self.type, self.names_list)
 
 class TopicCollection(Collection):
     type = Topic

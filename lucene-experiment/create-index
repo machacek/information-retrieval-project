@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import sys
+import shutil
 
 #
 # Moogle imports
@@ -16,8 +17,11 @@ from vertformatanalyzer import VertFormatAnalyzer
 import lucene
 from lucene import SimpleFSDirectory, File, IndexWriter, IndexWriterConfig, Version, Document, Field, StandardAnalyzer
 
-class Index(object):
+class IndexWriterWrapper(object):
     def __init__(self, location):
+        # Remove the directory first
+        shutil.rmtree(location, True)
+
         lucene.initVM()
         directory = SimpleFSDirectory(File(location))
         analyzer = VertFormatAnalyzer()
@@ -49,12 +53,14 @@ def main():
 
     documents = DocumentCollection(config.file_list, prefix=config.prefix)
 
-    index = Index(config.index)
+    index = IndexWriterWrapper(config.index)
 
     print("Adding documents", end="", file=sys.stderr)
+    print()
     for document in documents:
+        print(document.docid)
         index.index_document(document)
-        print(".", end="", file=sys.stderr)
+        #print(".", end="", file=sys.stderr)
     print()
 
     index.optimize()
