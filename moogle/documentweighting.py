@@ -100,6 +100,8 @@ class IdfDocumentFrequency(IndexMixin):
 class ProbIdfDocumentFrequency(IndexMixin):
     def document_frequency(self, term):
         df_t = len(self.inverted_index[term])
+        if df_t == self.inverted_index.N:
+            return 0 
         return max(0, log((self.inverted_index.N - df_t) / df_t))
 
 document_frequency_classes = {
