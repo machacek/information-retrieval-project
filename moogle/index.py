@@ -62,7 +62,7 @@ def get_retrieval_system_type(weighting):
 
             # We are going to process term at a time
             scores = Counter()
-            for term in query.elements():
+            for term, count in query.items():
 
                 if term in self.stopwords or term not in self.inverted_index:
                     continue
@@ -71,7 +71,7 @@ def get_retrieval_system_type(weighting):
                 document_frequency = self.document_frequency(term)
                 for docid, tf in self.inverted_index[term]:
                     term_frequency = self.term_frequency(term, docid, tf)
-                    scores[docid] += term_frequency * document_frequency
+                    scores[docid] += term_frequency * document_frequency * count
 
             # Normalizing
             normalized_scores = Counter()
