@@ -37,3 +37,11 @@ termclassifier_factory = Factory(init=False, types={
     'lemmas'        : attrgetter('lemma'),
     'shortlemmas'   : lambda x: x.lemma.split('_')[0]
     })
+
+#
+# Lowercasing
+#
+lowercase_factory = Factory(init = False, types={
+    True    : lambda x: x.lower(),
+    False   : lambda x: x,
+    })
