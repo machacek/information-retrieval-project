@@ -5,6 +5,9 @@ class VertItem(object):
 
         if len(fields) != 6:
             self.valid = False
+            self.form   = u""
+            self.lemma  = u""
+            self.tag    = u""
             return
 
         self.form   = fields[1]
