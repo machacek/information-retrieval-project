@@ -15,9 +15,9 @@ class Document(VertFormat):
             self.geography = None
 
         # Parse the sections
-        self.title = self.bag_of_words(soup.DOC.TITLE)
-        self.heading = self.bag_of_words(soup.DOC.HEADING)
-        self.text = self.bag_of_words(soup.DOC.TEXT)
+        self.title = self.bag_of_words(soup.DOC.find_all('TITLE'))
+        self.heading = self.bag_of_words(soup.DOC.find_all('HEADING'))
+        self.text = self.bag_of_words(soup.DOC.find_all('TEXT'))
 
     def __repr__(self):
         return "<Document: %s>" % self.docid

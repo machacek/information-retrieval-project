@@ -62,10 +62,13 @@ class VertFormat(object):
         return tokens
         #return filter(lambda x: x not in config.stopwords, tokens)
 
-    def bag_of_words(self, soup_object):
-        verts = self.parse_vertical_format(soup_object)
-        tokens = self.convert_to_tokens(verts) 
-        return Counter(tokens)
+    def bag_of_words(self, soup_list):
+        result = Counter()
+        for soup in soup_list:
+            verts = self.parse_vertical_format(soup)
+            tokens = self.convert_to_tokens(verts) 
+            result.update(tokens)
+        return result
 
     def section_length(self, tire):
         section = getattr(self, tire)

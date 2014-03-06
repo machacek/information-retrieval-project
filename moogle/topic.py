@@ -7,9 +7,9 @@ class Topic(VertFormat):
         self.num = soup.top.num.text.strip()
 
         # Parse the sections
-        self.title = self.bag_of_words(soup.top.title)
-        self.desc = self.bag_of_words(soup.top.desc)
-        self.narr = self.bag_of_words(soup.top.narr)
+        self.title = self.bag_of_words(soup.top.find_all('title'))
+        self.desc = self.bag_of_words(soup.top.find_all('desc'))
+        self.narr = self.bag_of_words(soup.top.find_all('narr'))
 
     def __repr__(self):
         return "<Topic: %s>" % self.num
