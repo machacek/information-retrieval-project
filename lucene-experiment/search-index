@@ -9,7 +9,7 @@ import sys
 #
 from config import config
 from collection import TopicCollection
-from vertformatanalyzer import VertFormatAnalyzer, WhitespaceAnalyzer
+from whitespaceanalyzer import WhitespaceAnalyzer
 
 #
 # Lucene imports
@@ -21,13 +21,11 @@ class IndexSearcherWrapper(object):
     def __init__(self, location):
         lucene.initVM()
         directory = SimpleFSDirectory(File(location))
-        self.analyzer = VertFormatAnalyzer()
         self.searcher = IndexSearcher(directory)
         self.query_parser = QueryParser(Version.LUCENE_CURRENT, "text", WhitespaceAnalyzer())
 
     def search(self, topic):
-        query_str = self.analyzer.preproces_query(topic.title)
-        query = self.query_parser.parse(query_str)
+        query = self.query_parser.parse(topic.title)
         MAX = 5000
         return self.searcher.search(query, MAX)
 

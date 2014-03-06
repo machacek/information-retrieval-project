@@ -35,9 +35,9 @@ class Topic(DocumentTopicBase):
     
     def process_soup(self, soup):
         self.num = soup.top.num.text.strip()
-        self.title = self.converted_tokens_str(soup.DOC.find_all("title"))
-        self.desc = self.converted_tokens_str(soup.DOC.find_all("desc"))
-        self.narr = self.converted_tokens_str(soup.DOC.find_all("narr"))
+        self.title = self.converted_tokens_str(soup.top.find_all("title"))
+        self.desc = self.converted_tokens_str(soup.top.find_all("desc"))
+        self.narr = self.converted_tokens_str(soup.top.find_all("narr"))
 
     def __unicode__(self):
         return "<Topic %s: %s>" % (self.num, self.title)
