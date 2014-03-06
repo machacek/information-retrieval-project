@@ -9,7 +9,7 @@ import shutil
 #
 from config import config
 from collection import DocumentCollection
-from whitespaceanalyzer import WhiteSpaceAnalyzer
+from whitespaceanalyzer import WhitespaceAnalyzer
 
 #
 # Lucene imports
@@ -24,14 +24,12 @@ class IndexWriterWrapper(object):
 
         lucene.initVM()
         directory = SimpleFSDirectory(File(location))
-        analyzer = WhiteSpaceAnalyzer()
+        analyzer = WhitespaceAnalyzer()
         writer_config = IndexWriterConfig(Version.LUCENE_CURRENT, analyzer)
         self.writer = IndexWriter(directory, writer_config)
 
 
     def index_document(self, document):
-        print(document)
-        return
         doc = Document()
         doc.add(Field("docid", document.docid, Field.Store.YES, Field.Index.NO))
         doc.add(Field("title", document.title, Field.Store.NO, Field.Index.ANALYZED))
@@ -59,7 +57,7 @@ def main():
     print()
     for document in documents:
         index.index_document(document)
-        #print(".", end="", file=sys.stderr)
+        print(".", end="", file=sys.stderr)
     print()
 
     index.optimize()

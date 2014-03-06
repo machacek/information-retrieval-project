@@ -16,7 +16,7 @@ class DocumentTopicBase(object):
                 raise
     
     def converted_tokens_str(self, soup_list):
-        " ".join(self.converted_tokens(soup_list))
+        return u" ".join(self.converted_tokens(soup_list))
 
     def converted_tokens(self, soup_list):
         for vert_item in self.vert_items(soup_list):
@@ -39,7 +39,7 @@ class Topic(DocumentTopicBase):
         self.desc = self.converted_tokens_str(soup.DOC.find_all("desc"))
         self.narr = self.converted_tokens_str(soup.DOC.find_all("narr"))
 
-    def __repr__(self):
+    def __unicode__(self):
         return "<Topic %s: %s>" % (self.num, self.title)
 
 
@@ -52,5 +52,5 @@ class Document(DocumentTopicBase):
         self.heading = self.converted_tokens_str(soup.DOC.find_all("HEADING"))
         self.text = self.converted_tokens_str(soup.DOC.find_all("TEXT"))
 
-    def __repr__(self):
+    def __unicode__(self):
         return "<Document %s: %s>" % (self.docid, self.title)
