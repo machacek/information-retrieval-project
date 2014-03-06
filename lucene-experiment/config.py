@@ -50,7 +50,6 @@ search_index performs retrieval for given index and list of topics""",
     parser.add_argument("-c", "--lowercase",
             help="lowercasing",
             action="store_true",
-            type=lowercase_factory,
             dest="lowercase")
 
     parser.add_argument("-t", "--termclasses",
@@ -85,3 +84,4 @@ search_index performs retrieval for given index and list of topics""",
     return parser.parse_args()
 
 config = parse_args()
+config.lowercase = lowercase_factory(config.lowercase)

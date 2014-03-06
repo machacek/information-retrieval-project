@@ -13,7 +13,7 @@ class Factory(object):
 
     def __call__(self, type_str):
         try:
-            if ':' in type_str:
+            if type(type_str) is str and ':' in type_str:
                 type_name, config_str = type_str.split(':',2)
                 args = config_str.split(',')
                 if self.init:

@@ -9,13 +9,13 @@ import shutil
 #
 from config import config
 from collection import DocumentCollection
-from vertformatanalyzer import VertFormatAnalyzer
+from whitespaceanalyzer import WhiteSpaceAnalyzer
 
 #
 # Lucene imports
 #
 import lucene
-from lucene import SimpleFSDirectory, File, IndexWriter, IndexWriterConfig, Version, Document, Field, StandardAnalyzer
+from lucene import SimpleFSDirectory, File, IndexWriter, IndexWriterConfig, Version, Document, Field
 
 class IndexWriterWrapper(object):
     def __init__(self, location):
@@ -24,12 +24,14 @@ class IndexWriterWrapper(object):
 
         lucene.initVM()
         directory = SimpleFSDirectory(File(location))
-        analyzer = VertFormatAnalyzer()
+        analyzer = WhiteSpaceAnalyzer()
         writer_config = IndexWriterConfig(Version.LUCENE_CURRENT, analyzer)
         self.writer = IndexWriter(directory, writer_config)
 
 
     def index_document(self, document):
+        print(document)
+        return
         doc = Document()
         doc.add(Field("docid", document.docid, Field.Store.YES, Field.Index.NO))
         doc.add(Field("title", document.title, Field.Store.NO, Field.Index.ANALYZED))
@@ -49,8 +51,6 @@ class IndexWriterWrapper(object):
 
 
 def main():    
-
-
     documents = DocumentCollection(config.file_list, prefix=config.prefix)
 
     index = IndexWriterWrapper(config.index)
@@ -58,7 +58,6 @@ def main():
     print("Adding documents", end="", file=sys.stderr)
     print()
     for document in documents:
-        print(document.docid)
         index.index_document(document)
         #print(".", end="", file=sys.stderr)
     print()
