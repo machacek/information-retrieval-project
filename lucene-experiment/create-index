@@ -32,8 +32,8 @@ class IndexWriterWrapper(object):
     def index_document(self, document):
         doc = Document()
         doc.add(Field("docid", document.docid, Field.Store.YES, Field.Index.NO))
-        doc.add(Field("title", document.title, Field.Store.NO, Field.Index.ANALYZED))
-        doc.add(Field("heading", document.heading, Field.Store.NO, Field.Index.ANALYZED))
+        doc.add(Field("title", document.title, Field.Store.YES, Field.Index.ANALYZED))
+        doc.add(Field("heading", document.heading, Field.Store.YES, Field.Index.ANALYZED))
         doc.add(Field("text", document.text, Field.Store.NO, Field.Index.ANALYZED))
         self.writer.addDocument(doc)
 
