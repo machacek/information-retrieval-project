@@ -4,6 +4,7 @@ import sys
 
 # Custom imports
 from preprocessing import termclassifier_factory, stopwords_factory, lowercase_factory
+from searchers import searcher_factory
 #from query import query_factory
 
 def parse_args(args=None):
@@ -51,6 +52,11 @@ search_index performs retrieval for given index and list of topics""",
             help="lowercasing",
             action="store_true",
             dest="lowercase")
+    
+    parser.add_argument("-f", "--blind-feedback",
+            help="Performs pseudo relevance feedback",
+            action="store_true",
+            dest="feedback")
 
     parser.add_argument("-t", "--termclasses",
             help="turning text into bag of words/terms",
@@ -85,3 +91,4 @@ search_index performs retrieval for given index and list of topics""",
 
 config = parse_args()
 config.lowercase = lowercase_factory(config.lowercase)
+config.searcher_type = searcher_factory(config.feedback)
